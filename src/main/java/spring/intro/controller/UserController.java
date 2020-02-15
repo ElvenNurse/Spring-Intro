@@ -24,47 +24,25 @@ public class UserController {
 
     @GetMapping("/inject")
     public String inject() {
-        User testUser1 = new User();
-        testUser1.setEmail("test_user_1@deneg.net");
-        testUser1.setPassword("qwerty");
-        userService.add(testUser1);
-
-        User testUser2 = new User();
-        testUser2.setEmail("test_user_2@deneg.net");
-        testUser2.setPassword("123456");
-        userService.add(testUser2);
-
-        User testUser3 = new User();
-        testUser3.setEmail("test_user_3@deneg.net");
-        testUser3.setPassword("password");
-        userService.add(testUser3);
-
-        User testUser4 = new User();
-        testUser4.setEmail("test_user_4@deneg.net");
-        testUser4.setPassword("123");
-        userService.add(testUser4);
-
+        for (int i = 1; i <= 4; i++) {
+            User user = new User();
+            user.setEmail(String.format("user%d@ukr.net", i));
+            user.setPassword("123");
+            userService.add(user);
+        }
         return "Users injected";
     }
 
     @GetMapping("/{id}")
     public UserResponseDto get(@PathVariable Long id) {
-        UserResponseDto response = new UserResponseDto();
         User user = userService.get(id);
-        response.setEmail(user.getEmail());
-        response.setPassword(user.getPassword());
-        return response;
+        return new UserResponseDto(user);
     }
 
     @GetMapping("/")
     public List<UserResponseDto> getAll() {
-        List<UserResponseDto> userResponseDtos = new ArrayList<>();
-        userService.listUsers().forEach(u -> {
-            UserResponseDto response = new UserResponseDto();
-            response.setEmail(u.getEmail());
-            response.setPassword(u.getPassword());
-            userResponseDtos.add(response);
-        });
-        return userResponseDtos;
+        List<UserResponseDto> usersResponseDto = new ArrayList<>();
+        userService.listUsers().forEach(u -> usersResponseDto.add(new UserResponseDto(u)));
+        return usersResponseDto;
     }
 }
