@@ -36,21 +36,20 @@ public class UserController {
     @GetMapping("/{id}")
     public UserResponseDto get(@PathVariable Long id) {
         User user = userService.get(id);
-        UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setEmail(user.getEmail());
-        userResponseDto.setPassword(user.getPassword());
-        return userResponseDto;
+        return getDtoFromUser(user);
     }
 
     @GetMapping("/")
     public List<UserResponseDto> getAll() {
         List<UserResponseDto> usersResponseDto = new ArrayList<>();
-        userService.listUsers().forEach(u -> {
-            UserResponseDto userResponseDto = new UserResponseDto();
-            userResponseDto.setEmail(u.getEmail());
-            userResponseDto.setPassword(u.getPassword());
-            usersResponseDto.add(userResponseDto);
-        });
+        userService.listUsers().forEach(u -> usersResponseDto.add(getDtoFromUser(u)));
         return usersResponseDto;
+    }
+
+    private UserResponseDto getDtoFromUser(User user) {
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setEmail(user.getEmail());
+        userResponseDto.setPassword(user.getPassword());
+        return userResponseDto;
     }
 }
