@@ -1,12 +1,12 @@
 package spring.intro.dao.impl;
 
 import java.util.List;
-
 import javax.persistence.criteria.CriteriaQuery;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import spring.intro.dao.UserDao;
 import spring.intro.model.User;
@@ -15,6 +15,7 @@ import spring.intro.model.User;
 public class UserDaoImpl implements UserDao {
     private SessionFactory sessionFactory;
 
+    @Autowired
     public UserDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -32,6 +33,15 @@ public class UserDaoImpl implements UserDao {
                 transaction.rollback();
             }
             throw new RuntimeException("Can't insert User entity", e);
+        }
+    }
+
+    @Override
+    public User get(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(User.class, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Can't get User by id", e);
         }
     }
 
